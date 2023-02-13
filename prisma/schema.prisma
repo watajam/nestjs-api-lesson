@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int      @id @default(autoincrement()) //ユーザー作成時、自動でidが付与される
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  email          String   @unique //emailは重複許可しない
+  hashedPassword String //ハッシュ化したパスワードを登録したいのでこの名前
+  nickName       String?
+  //逆参照
+  tasks          Task[]
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  title       String
+  description String?
+  //🔻どのユーザーが作成したのか追加
+  userId      Int //ユーザーidにはuseridが追加される
+  //1対多　
+  // User(参照したいモデル)　 references（userモデルのid）onDelete: Cascade(ユーザーが削除されると紐付いているタスクも削除される)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}

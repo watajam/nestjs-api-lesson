@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  dev-postgres:
+    image: postgres:14.4-alpine
+    # 5434 =  今動かしているコンピューターのポート番号
+    # 5432 =  dockerのPostgresに対応したポート番号
+    # 5434にアクセスすると5432につながる
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: udemy
+      POSTGRES_PASSWORD: udemy
+      POSTGRES_DB: udemy
+      # コンテイナーが停止したときに自動でリスタート
+    restart: always
+    # lessonは任意の名前
+    networks:
+      - lesson
+networks:
+  lesson:
